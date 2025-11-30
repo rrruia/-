@@ -11,13 +11,22 @@
 <body>
     <div id="ui">
         <div id="score">Score: 0.0s</div>
-        <button id="pauseBtn">暂停</button>
+        <div id="controls"><button id="pauseBtn">暂停</button><button id="helpBtn">说明</button></div>
     </div>
     <canvas id="game"></canvas>
     <div id="pauseOverlay" class="hidden">
         <div class="panel">
             <div id="pauseScore">Score: 0.0s</div>
             <button id="centerPauseBtn">继续</button>
+        </div>
+    </div>
+    <div id="helpOverlay" class="hidden">
+        <div class="panel">
+            <div>游戏说明</div>
+            <div style="opacity:.85">目标：躲避自上而下的小球，生存更久获得更高分数。</div>
+            <div style="opacity:.85">操作：键盘 ←/→ 或 A/D 移动；Esc/空格 暂停/继续；手机画布上滑动控制。</div>
+            <div style="opacity:.85">难度：随时间加快生成与下落速度，可能同时生成多个敌球。</div>
+            <button id="helpCloseBtn">关闭</button>
         </div>
     </div>
     <div id="overlay" class="hidden">

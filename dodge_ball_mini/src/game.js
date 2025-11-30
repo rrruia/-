@@ -13,6 +13,9 @@ const pauseBtn = document.getElementById("pauseBtn");
 const overlay = document.getElementById("overlay");
 const pauseOverlay = document.getElementById("pauseOverlay");
 const centerPauseBtn = document.getElementById("centerPauseBtn");
+const helpBtn = document.getElementById("helpBtn");
+const helpOverlay = document.getElementById("helpOverlay");
+const helpCloseBtn = document.getElementById("helpCloseBtn");
 const pauseScore = document.getElementById("pauseScore");
 const finalScore = document.getElementById("finalScore");
 const restartBtn = document.getElementById("restartBtn");
@@ -21,9 +24,10 @@ const game = new Game();
 let prev = performance.now();
 function loop(ts) { const dt = Math.min(0.033, (ts - prev) / 1000); prev = ts; game.update(dt); game.draw(); requestAnimationFrame(loop) }
 requestAnimationFrame(loop);
-document.addEventListener("keydown", e => { if (e.key === "ArrowLeft" || e.key.toLowerCase() === "a") keys.left = true; if (e.key === "ArrowRight" || e.key.toLowerCase() === "d") keys.right = true; if ((e.key === "Escape" || e.code === "Space" || e.key === " ") && !e.repeat) { e.preventDefault(); if (!game.gameOver) { game.paused = !game.paused; pauseBtn.textContent = game.paused ? "继续" : "暂停"; if (game.paused) { pauseOverlay.classList.remove("hidden"); pauseScore.textContent = "Score: " + game.score.toFixed(1) + "s"; centerPauseBtn.textContent = "继续" } else { pauseOverlay.classList.add("hidden"); centerPauseBtn.textContent = "暂停" } } } });
+document.addEventListener("keydown", e => { if (e.key === "ArrowLeft" || e.key.toLowerCase() === "a") keys.left = true; if (e.key === "ArrowRight" || e.key.toLowerCase() === "d") keys.right = true; if ((e.key === "Escape" || e.code === "Space" || e.key === " ") && !e.repeat && helpOverlay.classList.contains("hidden")) { e.preventDefault(); if (!game.gameOver) { game.paused = !game.paused; pauseBtn.textContent = game.paused ? "继续" : "暂停"; if (game.paused) { pauseOverlay.classList.remove("hidden"); pauseScore.textContent = "Score: " + game.score.toFixed(1) + "s"; centerPauseBtn.textContent = "继续" } else { pauseOverlay.classList.add("hidden"); centerPauseBtn.textContent = "暂停" } } } });
 document.addEventListener("keyup", e => { if (e.key === "ArrowLeft" || e.key.toLowerCase() === "a") keys.left = false; if (e.key === "ArrowRight" || e.key.toLowerCase() === "d") keys.right = false });
 let touchActive = false;
+let pausedBeforeHelp = false;
 function setPlayerX(x) { game.player.cx = Math.max(game.player.w / 2, Math.min(canvas.width - game.player.w / 2, x)) }
 canvas.addEventListener("pointerdown", e => { if (e.pointerType !== "touch") return; const r = canvas.getBoundingClientRect(); setPlayerX(e.clientX - r.left); touchActive = true; e.preventDefault() });
 canvas.addEventListener("pointermove", e => { if (e.pointerType !== "touch" || !touchActive) return; const r = canvas.getBoundingClientRect(); setPlayerX(e.clientX - r.left); e.preventDefault() });
@@ -32,6 +36,8 @@ canvas.addEventListener("pointercancel", e => { if (e.pointerType !== "touch") r
 pauseBtn.addEventListener("click", () => { if (game.gameOver) return; game.paused = !game.paused; pauseBtn.textContent = game.paused ? "继续" : "暂停"; if (game.paused) { pauseOverlay.classList.remove("hidden"); pauseScore.textContent = "Score: " + game.score.toFixed(1) + "s"; centerPauseBtn.textContent = "继续" } else { pauseOverlay.classList.add("hidden"); centerPauseBtn.textContent = "暂停" } });
 restartBtn.addEventListener("click", () => { game.reset(); pauseBtn.textContent = "暂停"; pauseOverlay.classList.add("hidden") });
 centerPauseBtn.addEventListener("click", () => { if (game.gameOver) return; game.paused = !game.paused; pauseBtn.textContent = game.paused ? "继续" : "暂停"; if (game.paused) { pauseOverlay.classList.remove("hidden"); pauseScore.textContent = "Score: " + game.score.toFixed(1) + "s"; centerPauseBtn.textContent = "继续" } else { pauseOverlay.classList.add("hidden"); centerPauseBtn.textContent = "暂停" } });
+helpBtn.addEventListener("click", () => { if (game.gameOver) return; pausedBeforeHelp = game.paused; game.paused = true; pauseBtn.textContent = "继续"; pauseOverlay.classList.add("hidden"); helpOverlay.classList.remove("hidden") });
+helpCloseBtn.addEventListener("click", () => { helpOverlay.classList.add("hidden"); if (!pausedBeforeHelp && !game.gameOver) { game.paused = false; pauseBtn.textContent = "暂停" } else { game.paused = true; pauseBtn.textContent = "继续"; pauseOverlay.classList.remove("hidden") } });
 if ("ontouchstart" in window) {
     canvas.addEventListener("touchstart", e => { const t = e.touches[0]; if (!t) return; const r = canvas.getBoundingClientRect(); setPlayerX(t.clientX - r.left); touchActive = true; e.preventDefault() }, { passive: false });
     canvas.addEventListener("touchmove", e => { const t = e.touches[0]; if (!t || !touchActive) return; const r = canvas.getBoundingClientRect(); setPlayerX(t.clientX - r.left); e.preventDefault() }, { passive: false });
