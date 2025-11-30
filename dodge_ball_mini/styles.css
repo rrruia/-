@@ -41,6 +41,12 @@ body {
     pointer-events: auto
 }
 
+.hint {
+    margin-left: 6px;
+    font-size: 12px;
+    opacity: .7
+}
+
 #score {
     background: rgba(0, 0, 0, .35);
     padding: 8px 12px;
@@ -68,11 +74,32 @@ body {
     font-weight: 600
 }
 
+#soundBtn {
+    pointer-events: auto;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 12px;
+    background: #10b981;
+    color: #081016;
+    font-weight: 700
+}
+
 #pauseBtn:active {
     transform: scale(.98)
 }
 
 #overlay {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, .5);
+    backdrop-filter: blur(6px);
+    z-index: 100
+}
+
+#startOverlay {
     position: fixed;
     inset: 0;
     display: flex;
@@ -104,7 +131,8 @@ body {
 }
 
 #restartBtn,
-#centerPauseBtn {
+#centerPauseBtn,
+#startBtn {
     border: none;
     border-radius: 8px;
     padding: 10px 14px;
@@ -114,7 +142,8 @@ body {
 }
 
 #restartBtn:active,
-#centerPauseBtn:active {
+#centerPauseBtn:active,
+#startBtn:active {
     transform: scale(.98)
 }
 
