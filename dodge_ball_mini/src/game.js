@@ -23,6 +23,17 @@ function loop(ts) { const dt = Math.min(0.033, (ts - prev) / 1000); prev = ts; g
 requestAnimationFrame(loop);
 document.addEventListener("keydown", e => { if (e.key === "ArrowLeft" || e.key.toLowerCase() === "a") keys.left = true; if (e.key === "ArrowRight" || e.key.toLowerCase() === "d") keys.right = true; if ((e.key === "Escape" || e.code === "Space" || e.key === " ") && !e.repeat) { e.preventDefault(); if (!game.gameOver) { game.paused = !game.paused; pauseBtn.textContent = game.paused ? "继续" : "暂停"; if (game.paused) { pauseOverlay.classList.remove("hidden"); pauseScore.textContent = "Score: " + game.score.toFixed(1) + "s"; centerPauseBtn.textContent = "继续" } else { pauseOverlay.classList.add("hidden"); centerPauseBtn.textContent = "暂停" } } } });
 document.addEventListener("keyup", e => { if (e.key === "ArrowLeft" || e.key.toLowerCase() === "a") keys.left = false; if (e.key === "ArrowRight" || e.key.toLowerCase() === "d") keys.right = false });
+let touchActive = false;
+function setPlayerX(x) { game.player.cx = Math.max(game.player.w / 2, Math.min(canvas.width - game.player.w / 2, x)) }
+canvas.addEventListener("pointerdown", e => { if (e.pointerType !== "touch") return; const r = canvas.getBoundingClientRect(); setPlayerX(e.clientX - r.left); touchActive = true; e.preventDefault() });
+canvas.addEventListener("pointermove", e => { if (e.pointerType !== "touch" || !touchActive) return; const r = canvas.getBoundingClientRect(); setPlayerX(e.clientX - r.left); e.preventDefault() });
+canvas.addEventListener("pointerup", e => { if (e.pointerType !== "touch") return; touchActive = false });
+canvas.addEventListener("pointercancel", e => { if (e.pointerType !== "touch") return; touchActive = false });
 pauseBtn.addEventListener("click", () => { if (game.gameOver) return; game.paused = !game.paused; pauseBtn.textContent = game.paused ? "继续" : "暂停"; if (game.paused) { pauseOverlay.classList.remove("hidden"); pauseScore.textContent = "Score: " + game.score.toFixed(1) + "s"; centerPauseBtn.textContent = "继续" } else { pauseOverlay.classList.add("hidden"); centerPauseBtn.textContent = "暂停" } });
 restartBtn.addEventListener("click", () => { game.reset(); pauseBtn.textContent = "暂停"; pauseOverlay.classList.add("hidden") });
 centerPauseBtn.addEventListener("click", () => { if (game.gameOver) return; game.paused = !game.paused; pauseBtn.textContent = game.paused ? "继续" : "暂停"; if (game.paused) { pauseOverlay.classList.remove("hidden"); pauseScore.textContent = "Score: " + game.score.toFixed(1) + "s"; centerPauseBtn.textContent = "继续" } else { pauseOverlay.classList.add("hidden"); centerPauseBtn.textContent = "暂停" } });
+if ("ontouchstart" in window) {
+    canvas.addEventListener("touchstart", e => { const t = e.touches[0]; if (!t) return; const r = canvas.getBoundingClientRect(); setPlayerX(t.clientX - r.left); touchActive = true; e.preventDefault() }, { passive: false });
+    canvas.addEventListener("touchmove", e => { const t = e.touches[0]; if (!t || !touchActive) return; const r = canvas.getBoundingClientRect(); setPlayerX(t.clientX - r.left); e.preventDefault() }, { passive: false });
+    canvas.addEventListener("touchend", () => { touchActive = false }, { passive: true });
+}
