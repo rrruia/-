@@ -29,7 +29,7 @@ document.addEventListener("keyup", e => { if (e.key === "ArrowLeft" || e.key.toL
 let touchActive = false;
 let pausedBeforeHelp = false;
 function setPlayerX(x) { game.player.cx = Math.max(game.player.w / 2, Math.min(canvas.width - game.player.w / 2, x)) }
-canvas.addEventListener("pointerdown", e => { if (e.pointerType !== "touch") return; const r = canvas.getBoundingClientRect(); setPlayerX(e.clientX - r.left); touchActive = true; e.preventDefault() });
+canvas.addEventListener("pointerdown", e => { if (e.pointerType !== "touch") return; touchActive = true; e.preventDefault() });
 canvas.addEventListener("pointermove", e => { if (e.pointerType !== "touch" || !touchActive) return; const r = canvas.getBoundingClientRect(); setPlayerX(e.clientX - r.left); e.preventDefault() });
 canvas.addEventListener("pointerup", e => { if (e.pointerType !== "touch") return; touchActive = false });
 canvas.addEventListener("pointercancel", e => { if (e.pointerType !== "touch") return; touchActive = false });
@@ -39,7 +39,7 @@ centerPauseBtn.addEventListener("click", () => { if (game.gameOver) return; game
 helpBtn.addEventListener("click", () => { if (game.gameOver) return; pausedBeforeHelp = game.paused; game.paused = true; pauseBtn.textContent = "继续"; pauseOverlay.classList.add("hidden"); helpOverlay.classList.remove("hidden") });
 helpCloseBtn.addEventListener("click", () => { helpOverlay.classList.add("hidden"); if (!pausedBeforeHelp && !game.gameOver) { game.paused = false; pauseBtn.textContent = "暂停" } else { game.paused = true; pauseBtn.textContent = "继续"; pauseOverlay.classList.remove("hidden") } });
 if ("ontouchstart" in window) {
-    canvas.addEventListener("touchstart", e => { const t = e.touches[0]; if (!t) return; const r = canvas.getBoundingClientRect(); setPlayerX(t.clientX - r.left); touchActive = true; e.preventDefault() }, { passive: false });
+    canvas.addEventListener("touchstart", e => { const t = e.touches[0]; if (!t) return; touchActive = true; e.preventDefault() }, { passive: false });
     canvas.addEventListener("touchmove", e => { const t = e.touches[0]; if (!t || !touchActive) return; const r = canvas.getBoundingClientRect(); setPlayerX(t.clientX - r.left); e.preventDefault() }, { passive: false });
     canvas.addEventListener("touchend", () => { touchActive = false }, { passive: true });
 }
